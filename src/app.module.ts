@@ -14,15 +14,18 @@ import { User } from './users/users.entity';
 import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
 
+const { POSTGRES_PASSWORD, POSTGRES_USER, POSTGRES_DB_NAME, POSTGRES_HOST } =
+  process.env;
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'postgres',
+      host: POSTGRES_HOST,
       port: 5432,
-      username: 'postgres',
-      password: 'SomePassw0rd',
-      database: 'testtask',
+      username: POSTGRES_USER,
+      password: POSTGRES_PASSWORD,
+      database: POSTGRES_DB_NAME,
       entities: [User],
       synchronize: true,
     }),
