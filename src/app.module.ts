@@ -8,6 +8,7 @@ import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { jwtConstants } from './constants';
+import { Poll } from './poll/poll.entity';
 import { PollModule } from './poll/poll.module';
 import { UsersController } from './users/users.controller';
 import { User } from './users/users.entity';
@@ -26,12 +27,12 @@ const { POSTGRES_PASSWORD, POSTGRES_USER, POSTGRES_DB_NAME, POSTGRES_HOST } =
       username: POSTGRES_USER,
       password: POSTGRES_PASSWORD,
       database: POSTGRES_DB_NAME,
-      entities: [User],
+      entities: [User, Poll],
       synchronize: true,
     }),
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: 3600 },
     }),
     AuthModule,
     UsersModule,

@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BaseEntity,
+  OneToMany,
+} from 'typeorm';
+
+import { Poll } from '../poll/poll.entity';
 
 @Entity('user')
 export class User extends BaseEntity {
@@ -21,4 +29,7 @@ export class User extends BaseEntity {
     type: 'varchar',
   })
   password: string;
+
+  @OneToMany(() => Poll, (poll: Poll) => poll.user)
+  public polls: Poll[];
 }
