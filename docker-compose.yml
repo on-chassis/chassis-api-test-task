@@ -21,11 +21,13 @@ services:
         - postgres:postgres
     volumes:
       - .:/usr/src/app
+      - /usr/src/app/node_modules/
     build:
       context: .
       target: development
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB_NAME}
+      JWT_SECRET: ${JWT_SECRET}
     command: yarn start:dev
     ports:
       - "80:3000"

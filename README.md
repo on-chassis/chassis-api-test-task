@@ -1,3 +1,6 @@
+## Requirements
+* Node version: ^16.0.0
+
 ## Installation
 
 ```bash
@@ -13,16 +16,16 @@ $ docker-compose up
 
 ## Test task
 Task is to implement an API that can do following:
-* Sign up / Sign in for a user
-  * Email / Password credentials is a must
-  * OAuth via Google - additional, nice to have, not required
-* Update user's name, email, password (Authenticated, partial updates are OK)
-* User can create a poll (Authenticated)
-  * Poll is a set of sections and questions within those sections (see below)
-* User can modify the default poll, but it should not affect other users (Authenticated)
-* User can list all the polls available. Either default one or user created ones (Authenticated)
-* User can make a poll public, so non-registered users will be able to answer questions of the public poll (Public)
-* All the answers given to a public polls are stored in the DB. They could be retrieved by poll.id.
+- [x] Sign up / Sign in for a user
+  - [x] Email / Password credentials is a must
+  - [ ] OAuth via Google - additional, nice to have, not required
+- [x] Update user's name, email, password (Authenticated, partial updates are OK)
+- [ ] User can create a poll (Authenticated)
+  - [ ] Poll is a set of sections and questions within those sections (see below)
+- [ ] User can modify the default poll, but it should not affect other users (Authenticated)
+- [ ] User can list all the polls available. Either default one or user created ones (Authenticated)
+- [ ] User can make a poll public, so non-registered users will be able to answer questions of the public poll (Public)
+- [ ] All the answers given to a public polls are stored in the DB. They could be retrieved by poll.id.
 
 ### Default poll (always public)
 * Company info (section)

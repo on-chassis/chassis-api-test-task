@@ -3,7 +3,7 @@ ARG JWT_KEY
 ARG JWT_EXPIRES
 
 # BUILD DEV
-FROM node:latest AS development
+FROM node:16-alpine AS development
 
 WORKDIR /usr/src/app
 
@@ -11,6 +11,7 @@ COPY --chown=node:node package.json ./
 COPY --chown=node:node yarn.lock ./
 
 RUN yarn
+RUN npm i -g @nestjs/cli
 
 COPY --chown=node:node . .
 
