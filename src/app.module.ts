@@ -7,7 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PollsModule } from './polls/polls.module';
-import { UnsafeUser } from './users/entities/user.entity';
+import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -19,7 +19,7 @@ import { UsersModule } from './users/users.module';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         url: configService.get('DATABASE_URL'),
-        entities: [UnsafeUser],
+        entities: [User],
         synchronize: true,
       }),
       inject: [ConfigService],

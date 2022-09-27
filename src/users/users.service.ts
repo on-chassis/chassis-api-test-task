@@ -1,43 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from "bcrypt"
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FindUserDto } from './dto/find-user.dto';
 
-import { User, UnsafeUser } from './entities/user.entity';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(UnsafeUser) private readonly repo: Repository<UnsafeUser>) { }
+  constructor(@InjectRepository(User) private readonly repo: Repository<User>) { }
 
-  async findOneBy(user: FindUserDto): Promise<User | undefined> {
+  async findOneBy(user: FindUserDto): Promise<Express.User | undefined> {
     const entity = await this.repo.findOne(user);
     if (entity) {
-      const { passwordHash, ...safeUser } = entity;
-      return safeUser;
+      return {
+        id: entity.id,
+        username: entity.username,
+        name: entity.name,
+      }
     }
   }
 
   async checkPassword(username: string, password: string): Promise<Boolean> {
-    const entity = await this.repo.findOne({ username });
-    return bcrypt.compare(password, entity.passwordHash);
+    const user = await this.repo.findOne({ username });
+    return user.checkPassword(password);
   }
 
   async create(createUserDto: CreateUserDto) {
-    return this.repo.insert({
-      username: createUserDto.username,
-      passwordHash: await bcrypt.hash(createUserDto.password, 10),
-      name: createUserDto.name,
-    });
+    const user = new User();
+    user.username = createUserDto.username;
+    user.name = createUserDto.name;
+    await user.setPassword(createUserDto.password);
+    return this.repo.insert(user);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const update: Partial<UnsafeUser> = {};
+    const update: Partial<User> = {};
     if (updateUserDto.username) update.username = updateUserDto.username;
-    if (updateUserDto.password) update.passwordHash = await bcrypt.hash(updateUserDto.password, 10);
+    if (updateUserDto.password) update.setPassword(updateUserDto.password);
     if (updateUserDto.name) update.name = updateUserDto.name;
     return this.repo.update({ id }, update);
   }
