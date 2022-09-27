@@ -36,8 +36,9 @@ export class PollsService {
     await this.repo.insert(poll);
   }
 
-  findAll() {
-    return `This action returns all polls`;
+  async findAll(owner: User) {
+    const result = await this.repo.find({ creator: owner, child: null });
+    return result;
   }
 
   findOne(id: number) {

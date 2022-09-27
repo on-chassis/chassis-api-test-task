@@ -25,7 +25,8 @@ Task is to implement an API that can do following:
 - [ ] User can modify the default poll, but it should not affect other users (Authenticated)
   - [ ] Once default poll is modified - it should be overwritten, without losing data about previous poll-sections-questions settings and already collected answers
 - [ ] User can modify private polls without any restrictions and public polls using override mechanism (Authenticated)
-- [ ] User can list all the polls available. Either default one or user created ones (Authenticated)
+- [x] User can list all the polls available. Either default one or user created ones (Authenticated)
+  - [ ] Implement default poll prepopulate for new user profile
 - [ ] User can make a poll public, so non-registered users will be able to answer questions of the public poll (Public)
 - [ ] All the answers given to a public polls are stored in the DB. They could be retrieved by poll.id.
 
@@ -35,7 +36,7 @@ Task is to implement an API that can do following:
   - [x] How many people in a company?
 - [x] Personal info (section)
   - [x] What is your name?
-  - [ ] How old are you?
+  - [x] How old are you?
 
 ### Polls details
 - [x] Polls can have unlimited amount of sections and have at least one section. 

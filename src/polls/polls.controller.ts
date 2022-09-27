@@ -16,9 +16,12 @@ export class PollsController {
     return this.pollsService.create(createPollDto, creator);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
-  findAll() {
-    return this.pollsService.findAll();
+  async findAll(@Request() req: Express.AuthenticatedRequest) {
+    const owner = await this.usersService.findOneBy(req.user);
+    const result = await this.pollsService.findAll(owner);
+    return result;
   }
 
   @Get(':id')

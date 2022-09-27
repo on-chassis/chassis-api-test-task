@@ -7,7 +7,7 @@ export class Poll {
   id: string;  
 
   @OneToOne(() => User, (user) => user.id, { cascade: false })
-  private creator: User
+  creator: User
 
   @Column({ type: 'bit' })
   public: number;
