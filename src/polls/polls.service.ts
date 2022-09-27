@@ -17,6 +17,7 @@ export class PollsService {
     poll.public = false;
     poll.setCreator(creator);
     poll.sections = [];
+    poll.title = createPollDto.title;
     for (let i = 0; i < createPollDto.sections.length; i++) {
       const section = new PollSection();
       section.orderNumber = i;

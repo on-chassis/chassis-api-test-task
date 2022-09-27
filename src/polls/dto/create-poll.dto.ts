@@ -1,4 +1,5 @@
 export class CreatePollDto {
+    title: string;
     sections: CreatePollSectionDto[];
 }
 

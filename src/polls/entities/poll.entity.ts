@@ -23,6 +23,9 @@ export class Poll {
   @JoinColumn({ name: 'overwrittenBy' })
   readonly child: Poll;
 
+  @Column({ type: 'varchar' })
+  title: string;
+
   setCreator(user: User) { this.creator = user; }
 }
 
