@@ -3,10 +3,6 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { IsEmail } from "class-validator"
 import * as bcrypt from "bcrypt"
 
-/**
- * Avoid using this entity as @JoinColumn and use @Column('uuid') instead due to security reasons
- * When an entity which has this entity as @JoinColumn is sent in response without removing passwordHash then this User.passwordHash value will be leaked
- */
 @Entity('users')
 export class User implements Express.User {
   @PrimaryGeneratedColumn('uuid')
@@ -16,7 +12,7 @@ export class User implements Express.User {
   @IsEmail()
   username: string;
 
-  @Column({ type: 'varchar', length: 300 })
+  @Column({ type: 'varchar', length: 300, select: false })
   private passwordHash: string;
 
   @Column({ type: 'varchar', length: 300 })

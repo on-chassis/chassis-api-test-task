@@ -24,7 +24,7 @@ export class UsersService {
   }
 
   async checkPassword(username: string, password: string): Promise<Boolean> {
-    const user = await this.repo.findOne({ username });
+    const user = await this.repo.createQueryBuilder("user").addSelect('user.passwordHash').where("user.username = :username", { username }).getOneOrFail();
     return user.checkPassword(password);
   }
 
