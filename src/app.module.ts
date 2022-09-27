@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PollsModule } from './polls/polls.module';
 import { User } from './users/entities/user.entity';
+import { Poll, PollSection, PollQuestion } from './polls/entities/poll.entity';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -19,7 +20,7 @@ import { UsersModule } from './users/users.module';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         url: configService.get('DATABASE_URL'),
-        entities: [User],
+        entities: [User, Poll, PollSection, PollQuestion],
         synchronize: true,
       }),
       inject: [ConfigService],
