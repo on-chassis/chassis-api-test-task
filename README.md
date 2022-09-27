@@ -24,30 +24,30 @@ Task is to implement an API that can do following:
   - [x] Poll is a set of sections and questions within those sections (see below)
 - [ ] User can modify the default poll, but it should not affect other users (Authenticated)
   - [ ] Once default poll is modified - it should be overwritten, without losing data about previous poll-sections-questions settings and already collected answers
-- [ ] User can modify private polls without any restrictions and public polls using override mechanism
+- [ ] User can modify private polls without any restrictions and public polls using override mechanism (Authenticated)
 - [ ] User can list all the polls available. Either default one or user created ones (Authenticated)
 - [ ] User can make a poll public, so non-registered users will be able to answer questions of the public poll (Public)
 - [ ] All the answers given to a public polls are stored in the DB. They could be retrieved by poll.id.
 
 ### Default poll (always public)
-* Company info (section)
-  * What's your company name?
-  * How many people in a company?
-* Personal info (section)
-  * What is your name?
-  * How old are you?
+- [x] Company info (section)
+  - [x] What's your company name?
+  - [x] How many people in a company?
+- [x] Personal info (section)
+  - [x] What is your name?
+  - [ ] How old are you?
 
 ### Polls details
-* Polls can have unlimited amount of sections and have at least one section. 
-* Every section has questions. At least one in a section.
-* Questions have freeform answers
+- [x] Polls can have unlimited amount of sections and have at least one section. 
+- [x] Every section has questions. At least one in a section.
+- [ ] Questions have freeform answers
 
 ## Limitations:
-* DB is Postgres
-* Framework is nestjs
-* Types are important
-* Tests are welcomed
-* Linter is set up, feel free to update linter rules
+- [x] DB is Postgres
+- [x] Framework is nestjs
+- [x] Types are important
+- [ ] Tests are welcomed
+- [ ] Linter is set up, feel free to update linter rules
 
 ## Deliverables:
 * Working API with instructions how to run it. Better if deployed somewhere (e.g. Heroku).
