@@ -7,7 +7,7 @@ export class Poll {
   id: string;  
 
   @OneToOne(() => User, (user) => user.id, { cascade: false })
-  readonly creator: User
+  private creator: User
 
   @Column({ type: 'bit' })
   public: boolean;
@@ -22,6 +22,8 @@ export class Poll {
   @OneToOne(() => Poll, (child) => child.id, { cascade: false })
   @JoinColumn({ name: 'overwrittenBy' })
   readonly child: Poll;
+
+  setCreator(user: User) { this.creator = user; }
 }
 
 @Entity('poll_sections')
@@ -38,7 +40,7 @@ export class PollSection {
 
   @OneToMany(() => PollQuestion, (pollQuestion) => pollQuestion.section, { cascade: true })
   @JoinColumn({ name: 'questionId' })
-  question: PollQuestion[];
+  questions: PollQuestion[];
 
   @Column({ type: 'int' })
   orderNumber: number;

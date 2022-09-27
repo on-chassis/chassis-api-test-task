@@ -12,15 +12,9 @@ import { User } from './entities/user.entity';
 export class UsersService {
   constructor(@InjectRepository(User) private readonly repo: Repository<User>) { }
 
-  async findOneBy(user: FindUserDto): Promise<Express.User | undefined> {
+  async findOneBy(user: FindUserDto): Promise<User | undefined> {
     const entity = await this.repo.findOne(user);
-    if (entity) {
-      return {
-        id: entity.id,
-        username: entity.username,
-        name: entity.name,
-      }
-    }
+    return entity;
   }
 
   async checkPassword(username: string, password: string): Promise<Boolean> {

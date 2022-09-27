@@ -1,17 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { PollsService } from './polls.service';
 import { CreatePollDto } from './dto/create-poll.dto';
 import { UpdatePollDto } from './dto/update-poll.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { UsersService } from '../users/users.service';
 
 @Controller('polls')
 export class PollsController {
-  constructor(private readonly pollsService: PollsService) {}
+  constructor(private readonly pollsService: PollsService, private readonly usersService: UsersService) {}
 
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(AuthGuard('jwt'))
   @Post()
-  create(@Body() createPollDto: CreatePollDto) {
-    return this.pollsService.create(createPollDto);
+  async create(@Request() req: Express.AuthenticatedRequest, @Body() createPollDto: CreatePollDto) {
+    const creator = await this.usersService.findOneBy(req.user);
+    return this.pollsService.create(createPollDto, creator);
   }
 
   @Get()

@@ -20,8 +20,8 @@ Task is to implement an API that can do following:
   - [x] Email / Password credentials is a must
   - [ ] OAuth via Google - additional, nice to have, not required
 - [x] Update user's name, email, password (Authenticated, partial updates are OK)
-- [ ] User can create a poll (Authenticated)
-  - [ ] Poll is a set of sections and questions within those sections (see below)
+- [x] User can create a poll (Authenticated)
+  - [x] Poll is a set of sections and questions within those sections (see below)
 - [ ] User can modify the default poll, but it should not affect other users (Authenticated)
   - [ ] Once default poll is modified - it should be overwritten, without losing data about previous poll-sections-questions settings and already collected answers
 - [ ] User can modify private polls without any restrictions and public polls using override mechanism
