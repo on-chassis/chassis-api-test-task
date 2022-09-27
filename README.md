@@ -23,6 +23,8 @@ Task is to implement an API that can do following:
 - [ ] User can create a poll (Authenticated)
   - [ ] Poll is a set of sections and questions within those sections (see below)
 - [ ] User can modify the default poll, but it should not affect other users (Authenticated)
+  - [ ] Once default poll is modified - it should be overwritten, without losing data about previous poll-sections-questions settings and already collected answers
+- [ ] User can modify private polls without any restrictions and public polls using override mechanism
 - [ ] User can list all the polls available. Either default one or user created ones (Authenticated)
 - [ ] User can make a poll public, so non-registered users will be able to answer questions of the public poll (Public)
 - [ ] All the answers given to a public polls are stored in the DB. They could be retrieved by poll.id.
