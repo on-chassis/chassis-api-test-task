@@ -29,6 +29,8 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
+    const existingUser = await this.findOneBy({ username: createUserDto.username });
+    if (existingUser) throw new Error('User with given email already exists');
     const user = new User();
     user.username = createUserDto.username;
     user.name = createUserDto.name;
@@ -38,6 +40,11 @@ export class UsersService {
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.repo.findOneOrFail({ id });
+    if (updateUserDto.username) {
+      const existingUser = await this.findOneBy({ username: updateUserDto.username });
+      if (existingUser) throw new Error('User with given email already exists');
+      user.username = updateUserDto.username;
+    }
     if (updateUserDto.username) user.username = updateUserDto.username;
     if (updateUserDto.password) await user.setPassword(updateUserDto.password);
     if (updateUserDto.name) user.name = updateUserDto.name;
