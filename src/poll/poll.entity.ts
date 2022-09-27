@@ -5,9 +5,11 @@ import {
   BaseEntity,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
 import { User } from '../users/users.entity';
+import { Section } from './section.entity';
 
 @Entity('poll')
 export class Poll extends BaseEntity {
@@ -15,18 +17,6 @@ export class Poll extends BaseEntity {
     type: 'bigint',
   })
   id: number;
-
-  @Column({
-    type: 'varchar',
-  })
-  section: string;
-
-  @Column({
-    type: 'varchar',
-    array: true,
-    default: [],
-  })
-  questions: Array<string>;
 
   @Column({
     type: 'boolean',
@@ -37,4 +27,7 @@ export class Poll extends BaseEntity {
   @JoinColumn({ name: 'userId' })
   @ManyToOne(() => User, (user: User) => user.polls)
   public user: User;
+
+  @OneToMany(() => Section, (section: Section) => section.poll)
+  public sections: Section[];
 }

@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { CreateUserDTO } from './DTO/createUser.dto';
+import { UpdateUserDTO } from './DTO/updateUser.dto';
 import { User } from './users.entity';
 
 @Injectable()
@@ -35,7 +36,7 @@ export class UsersService {
     return result;
   }
 
-  async update(id: string, details: Partial<User>): Promise<void> {
+  async update(id: string, details: UpdateUserDTO): Promise<void> {
     if (details.password) {
       details.password = createHash('md5')
         .update(details.password)

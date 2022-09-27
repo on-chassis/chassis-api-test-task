@@ -1,13 +1,27 @@
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException } from '@nestjs/common';
 
-import { Poll } from './poll.entity';
+import { CreatePollDTO } from './DTO/createPoll.dto';
 
-export const checkPollExistanceAndAccess = async (
-  poll: Poll,
-  pollId: string,
-  userId: string,
-): Promise<void> => {
-  if (!poll || (!poll.isPublic && poll.user?.toString() !== userId)) {
-    throw new NotFoundException(`Poll with id ${pollId} doesn't exist!`);
+export const validatePollData = (
+  pollData: CreatePollDTO,
+  isUpdate = false,
+): void => {
+  if (!pollData.sections?.length) {
+    throw new ForbiddenException('Minimum 1 section is required!');
+  }
+  for (let i = 0; i < pollData.sections.length; i++) {
+    if (!pollData.sections[i].name) {
+      throw new ForbiddenException('Every section must have a name!');
+    }
+    if (isUpdate && !pollData.sections[i].id) {
+      throw new ForbiddenException(
+        '"id" property for every section is required!',
+      );
+    }
+    if (!pollData.sections[i].questions?.length) {
+      throw new ForbiddenException(
+        'Minimum 1 question is required per section!',
+      );
+    }
   }
 };

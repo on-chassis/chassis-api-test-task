@@ -1,16 +1,27 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsObject } from 'class-validator';
+
+import { Section } from '../poll.types';
 
 export class CreatePollDTO {
-  constructor(section: string, questions: Array<string>) {
-    this.section = section;
-    this.questions = questions;
+  constructor(sections: Array<Section>) {
+    this.sections = sections;
   }
 
   @IsNotEmpty()
-  @IsString()
-  section: string;
-
-  @IsNotEmpty()
-  @IsString({ each: true })
-  questions: Array<string>;
+  @IsObject({ each: true })
+  @ApiProperty({
+    isArray: true,
+    example: [
+      {
+        name: 'Personal',
+        questions: ['name?', 'age?'],
+      },
+      {
+        name: 'Company',
+        questions: ['company name?', 'salary?'],
+      },
+    ],
+  })
+  sections: Array<Section>;
 }
