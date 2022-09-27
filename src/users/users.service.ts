@@ -37,10 +37,10 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const update: Partial<User> = {};
-    if (updateUserDto.username) update.username = updateUserDto.username;
-    if (updateUserDto.password) update.setPassword(updateUserDto.password);
-    if (updateUserDto.name) update.name = updateUserDto.name;
-    return this.repo.update({ id }, update);
+    const user = await this.repo.findOneOrFail({ id });
+    if (updateUserDto.username) user.username = updateUserDto.username;
+    if (updateUserDto.password) await user.setPassword(updateUserDto.password);
+    if (updateUserDto.name) user.name = updateUserDto.name;
+    return this.repo.update({ id }, user);
   }
 }
