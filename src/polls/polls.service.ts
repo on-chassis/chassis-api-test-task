@@ -13,8 +13,8 @@ export class PollsService {
 
   async create(createPollDto: CreatePollDto, creator: User) {
     const poll = new Poll();
-    poll.default = 0;
-    poll.public = 0;
+    poll._default = 0;
+    poll._public = 0;
     poll.setCreator(creator);
     poll.sections = [];
     poll.title = createPollDto.title;

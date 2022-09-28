@@ -6,8 +6,8 @@ export class defaultPollSeed1664315717441 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         const poll = new Poll();
-        poll.default = 1;
-        poll.public = 1;
+        poll._default = 1;
+        poll._public = 1;
         poll.title = 'Default poll (always public)';
         poll.sections = []
 

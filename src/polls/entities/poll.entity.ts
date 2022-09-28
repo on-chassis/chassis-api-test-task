@@ -10,10 +10,10 @@ export class Poll {
   creator: User
 
   @Column({ type: 'bit' })
-  public: number;
+  _public: number;
 
   @Column({ type: 'bit' })
-  default: number;
+  _default: number;
 
   @OneToMany(() => PollSection, (pollSection) => pollSection.poll, { cascade: true })
   @JoinColumn({ name: 'name' })
