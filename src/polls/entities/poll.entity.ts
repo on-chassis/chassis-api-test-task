@@ -6,7 +6,7 @@ export class Poll {
   @PrimaryGeneratedColumn('uuid')
   id: string;  
 
-  @OneToOne(() => User, (user) => user.id, { cascade: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.id, { cascade: false, onDelete: 'CASCADE' })
   @JoinColumn()
   creator: User
 

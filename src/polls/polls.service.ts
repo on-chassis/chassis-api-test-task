@@ -57,7 +57,7 @@ export class PollsService {
 
   async update(id: string, createPollDto: CreatePollDto, creator: User) {
     const poll = await this.pollRepo.findOneOrFail({ id });
-    poll.title = createPollDto.title;
+    poll.title = createPollDto.title || poll.title;
     await this.pollRepo.update({ id }, poll);
     const pollModel = await this.pollRepo.findOneOrFail({ id });
     for (let i = 0; i < createPollDto.sections.length; i++) {
@@ -65,7 +65,7 @@ export class PollsService {
       const section = new PollSection();
       section.poll = pollModel;
       section.orderNumber = i;
-      section.title = createPollDto.sections[i].title;
+      section.title = createPollDto.sections[i].title || poll.sections[i].title;
       const sectionResult = await this.pollSectionsRepo.insert(section);
       const sectionId: string = sectionResult.generatedMaps[0].id;
       const sectionModel = await this.pollSectionsRepo.findOneOrFail({ id: sectionId });
@@ -73,13 +73,40 @@ export class PollsService {
         const question = new PollQuestion();
         question.section = sectionModel;
         question.orderNumber = j;
-        question.text = createPollDto.sections[i].questions[j].text;
+        question.text = createPollDto.sections[i].questions[j].text || poll.sections[i].questions[j].text;
         await this.pollQuestionsRepo.insert(question);
       }
     }
     return this.pollRepo.findOne({ id }, {
       relations: ['creator', 'sections', 'sections.questions']
     });
+  }
+
+  async prepopulateDefaultPolls(user: User) {
+    const defaultPolls = await this.pollRepo.find({ where: { _default: 1 }, relations: ['creator', 'sections', 'sections.questions'] });
+    for (let i = 0; i < defaultPolls.length; i++) {
+      const poll = this.sanitize(defaultPolls[i]);
+      const newPoll = await this.create(poll, user);
+      if (newPoll._public != defaultPolls[i]._public) {
+        await this.changePollPublic(newPoll.id, defaultPolls[i]._public);
+      }
+    }
+  }
+
+  private async changePollPublic(id: string, _public: number) {
+    await this.pollRepo.update({ id }, { _public });
+  }
+
+  sanitize(poll: Poll): CreatePollDto {
+    return {
+      title: poll.title,
+      sections: poll.sections.map((section) => ({
+        title: section.title,
+        questions: section.questions.map((question) => ({
+          text: question.text,
+        }))
+      }))
+    };
   }
 
   remove(id: number) {

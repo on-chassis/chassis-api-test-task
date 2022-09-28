@@ -1,4 +1,12 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreatePollDto } from './create-poll.dto';
+export class UpdatePollDto {
+    title?: string;
+    sections?: CreatePollSectionDto[];
+}
+class CreatePollSectionDto {
+    title?: string;
+    questions?: CreatePollQuestionDto[];
+}
 
-export class UpdatePollDto extends PartialType(CreatePollDto) {}
+class CreatePollQuestionDto {
+    text?: string;
+}

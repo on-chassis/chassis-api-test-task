@@ -68,6 +68,9 @@ describe('AppController (e2e)', () => {
       .send({ username: 'poll-creator@example.com', name: 'Dev', password: 'HelloWorld'})
       .expect(201);
 
+    expect(userResponse).toHaveProperty('body.id');
+    await userRepo.findOneOrFail({ username: 'poll-creator@example.com', name: 'Dev' });
+
     const { body: { access_token }} = await request(app.getHttpServer())
       .post('/auth/login')
       .send({ username: 'poll-creator@example.com', password: 'HelloWorld'})
@@ -94,7 +97,7 @@ describe('AppController (e2e)', () => {
       .expect(201);
 
     const creator = await userService.findOneBy({ id: userResponse.body.id })
-    const poll = await pollRepo.findOne({ creator }, { relations: ['creator', 'sections', 'sections.questions'] });
+    const poll = await pollRepo.findOne({ id: response.body.id, creator }, { relations: ['creator', 'sections', 'sections.questions'] });
     expect(poll).toEqual(response.body);
     await userRepo.delete({ username: 'poll-creator@example.com' });
   })
@@ -145,7 +148,7 @@ describe('AppController (e2e)', () => {
       .expect(200);
 
     const poll = await pollRepo.findOne({ id: createdPollResponse.body.id }, { relations: ['creator', 'sections', 'sections.questions'] });
-    console.log(JSON.stringify(poll));
+
     expect(poll).toEqual(updatedPollResponse.body);
 
     const equalityCheckData: any = pollUpdateData;

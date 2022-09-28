@@ -28,7 +28,7 @@ Task is to implement an API that can do following:
   - [ ] Once default poll is modified - it should be overwritten, without losing data about previous poll-sections-questions settings and already collected answers
   - [ ] User can modify private polls without any restrictions and public polls using override mechanism (Authenticated)
 - [x] User can list all the polls available. Either default one or user created ones (Authenticated)
-  - [ ] Implement default poll prepopulate for new user profile
+  - [x] Implement default poll prepopulate for new user profile
 - [ ] User can make a poll public, so non-registered users will be able to answer questions of the public poll (Public)
 - [ ] All the answers given to a public polls are stored in the DB. They could be retrieved by poll.id.
 

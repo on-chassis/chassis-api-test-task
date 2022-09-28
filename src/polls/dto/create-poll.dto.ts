@@ -9,10 +9,14 @@ export class CreatePollDto {
 }
 
 class CreatePollSectionDto {
+    @IsNotEmpty()
     title: string;
+
+    @IsArray()
     questions: CreatePollQuestionDto[];
 }
 
 class CreatePollQuestionDto {
+    @IsNotEmpty()
     text: string;
 }
