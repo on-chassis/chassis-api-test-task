@@ -13,7 +13,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",
-    "start:docker": "yarn build && yarn start:dev",
+    "start:docker": "chmod +x ./wait-for-command.sh && ./wait-for-command.sh -t 30 -c \"nc -z postgres 5432\" && yarn db:migrate:local && yarn build && yarn start:dev",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "lint:ci": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "test": "jest",

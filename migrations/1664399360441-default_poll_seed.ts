@@ -1,8 +1,8 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 import { Poll, PollQuestion, PollSection } from '../src/polls/entities/poll.entity'
 
-export class defaultPollSeed1664315717441 implements MigrationInterface {
-    name = 'defaultPollSeed1664315717441'
+export class defaultPollSeed1664399360441 implements MigrationInterface {
+    name = 'defaultPollSeed1664399360441'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         const poll = new Poll();

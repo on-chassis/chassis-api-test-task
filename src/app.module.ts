@@ -6,7 +6,9 @@ import { AuthModule } from './auth/auth.module';
 import { PollsModule } from './polls/polls.module';
 import { UsersModule } from './users/users.module';
 import { randomUUID } from 'crypto';
-
+import { User } from './users/entities/user.entity';
+import { Poll, PollSection, PollQuestion } from './polls/entities/poll.entity';
+import { PollRespondent, PollRespondentAnswers } from './polls/entities/answers.entity';
 @Module({
   imports: [
     AuthModule,
@@ -17,8 +19,8 @@ import { randomUUID } from 'crypto';
         type: 'postgres',
         name: process.env.NODE_ENV !== 'test' ? `node-${process.pid}` : `node-test-${randomUUID()}`,
         url: configService.get('DATABASE_URL'),
-        entities: ['./**/*.entity.ts'],
-        synchronize: true,
+        entities: [User, Poll, PollSection, PollQuestion, PollRespondent, PollRespondentAnswers],
+        synchronize: false,
       }),
       inject: [ConfigService],
     }),

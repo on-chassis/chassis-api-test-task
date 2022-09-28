@@ -1,18 +1,16 @@
 ## Requirements
-* Node version: ^16.0.0
-
-## Installation
-
-```bash
-$ yarn install
-```
+* Docker with docker-compose script or a new version with available syntax "docker compose up"
 
 ## Running the app
 
 ```bash
-# development
-$ docker-compose up
-$ yarn db:migrate:local
+$ docker compose up
+```
+
+## Running tests
+
+```bash
+$ yarn install
 $ yarn test:e2e
 ```
 
