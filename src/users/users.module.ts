@@ -8,10 +8,11 @@ import { UsersController } from './users.controller';
 
 import { User } from './entities/user.entity';
 import { Poll, PollQuestion, PollSection } from '../polls/entities/poll.entity';
+import { PollRespondent, PollRespondentAnswers } from '../polls/entities/answers.entity';
 
 @Module({
   controllers: [UsersController],
-  imports: [TypeOrmModule.forFeature([User, Poll, PollSection, PollQuestion])],
+  imports: [TypeOrmModule.forFeature([User, Poll, PollSection, PollQuestion, PollRespondent,PollRespondentAnswers])],
   providers: [UsersService, PollsService],
   exports: [UsersService],
 })

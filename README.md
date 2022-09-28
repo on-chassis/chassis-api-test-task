@@ -30,7 +30,7 @@ Task is to implement an API that can do following:
 - [x] User can list all the polls available. Either default one or user created ones (Authenticated)
   - [x] Implement default poll prepopulate for new user profile
 - [x] User can make a poll public, so non-registered users will be able to answer questions of the public poll (Public)
-- [ ] All the answers given to a public polls are stored in the DB. They could be retrieved by poll.id.
+- [x] All the answers given to a public polls are stored in the DB. They could be retrieved by poll.id (Authenticated)
 
 ### Default poll (always public)
 - [x] Company info (section)
@@ -43,7 +43,7 @@ Task is to implement an API that can do following:
 ### Polls details
 - [x] Polls can have unlimited amount of sections and have at least one section. 
 - [x] Every section has questions. At least one in a section.
-- [ ] Questions have freeform answers
+- [x] Questions have freeform answers
 
 ## Limitations:
 - [x] DB is Postgres
@@ -53,7 +53,7 @@ Task is to implement an API that can do following:
 - [ ] Linter is set up, feel free to update linter rules
 
 ## Deliverables:
-* Working API with instructions how to run it. Better if deployed somewhere (e.g. Heroku).
-* Endpoints description w/contracts (Better if it's accessible Swagger)
-* Description of solution drawbacks/limitations
-* PR to this repo / Link to a github repo with implemented test task
+- [x] Working API with instructions how to run it. Better if deployed somewhere (e.g. Heroku).
+- [x] Endpoints description w/contracts (Better if it's accessible Swagger)
+- [ ] Description of solution drawbacks/limitations
+- [ ] PR to this repo / Link to a github repo with implemented test task

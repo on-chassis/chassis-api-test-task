@@ -15,8 +15,8 @@ export class PollsService {
     @InjectRepository(Poll) private readonly pollRepo: Repository<Poll>,
     @InjectRepository(PollSection) private readonly pollSectionsRepo: Repository<PollSection>,
     @InjectRepository(PollQuestion) private readonly pollQuestionsRepo: Repository<PollQuestion>,
-    @InjectRepository(PollQuestion) private readonly pollRespondentsRepo: Repository<PollRespondent>,
-    @InjectRepository(PollQuestion) private readonly pollRespondentAnswersRepo: Repository<PollRespondentAnswers>,
+    @InjectRepository(PollRespondent) private readonly pollRespondentsRepo: Repository<PollRespondent>,
+    @InjectRepository(PollRespondentAnswers) private readonly pollRespondentAnswersRepo: Repository<PollRespondentAnswers>,
   ) { }
 
   async create(createPollDto: CreatePollDto, creator: User) {
@@ -157,7 +157,7 @@ export class PollsService {
   }
 
   async collectAnswers(id: string, collectAnswersDto: CollectAnswersDto) {
-    const poll = await this.pollRepo.findOneOrFail({ id });
+    const poll = await this.pollRepo.findOneOrFail({ where: { id }, relations: ['creator', 'sections', 'sections.questions'] });
     const pollRespondentResult = await this.pollRespondentsRepo.insert({ poll });
     const pollRespondentId: string = pollRespondentResult.generatedMaps[0].id;
     const pollRespondent = await this.pollRespondentsRepo.findOneOrFail({ id: pollRespondentId });
@@ -169,5 +169,6 @@ export class PollsService {
         text: collectAnswersDto.answers[i].text
       });
     }
+    return pollRespondent;
   }
 }

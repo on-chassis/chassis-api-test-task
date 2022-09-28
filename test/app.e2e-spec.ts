@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import {expect, jest, test} from '@jest/globals';
+import { Repository } from 'typeorm';
 import * as _ from 'lodash'
 
 import { AppModule } from './../src/app.module';
@@ -11,6 +12,8 @@ import { User } from '../src/users/entities/user.entity';
 import { CreatePollDto } from '../src/polls/dto/create-poll.dto';
 import { Poll } from '../src/polls/entities/poll.entity';
 import { UsersService } from '../src/users/users.service';
+import { CollectAnswersDto } from '../src/polls/dto/collect-answers.dto';
+import { PollRespondent, PollRespondentAnswers } from '../src/polls/entities/answers.entity';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -268,5 +271,46 @@ describe('AppController (e2e)', () => {
     });
 
     await userRepo.delete({ username: 'update-public@example.com' });
+  })
+
+  it('/polls/:id/answers (POST) collect polls answers', async () => {
+    const userRepo = app.get(getRepositoryToken(User));
+    const pollRepo = app.get(getRepositoryToken(Poll));
+    const pollAnswersRepo: Repository<PollRespondentAnswers> = app.get(getRepositoryToken(PollRespondentAnswers));
+    const userService = app.get(UsersService);
+    await userRepo.delete({ username: 'poll-creator-for-answers@example.com' });
+
+    const userResponse = await request(app.getHttpServer())
+      .post('/user')
+      .send({ username: 'poll-creator-for-answers@example.com', name: 'Dev', password: 'HelloWorld'})
+      .expect(201);
+    
+    const creator = await userRepo.findOneOrFail({ id: userResponse.body.id });
+    const defaultPoll: Poll = await pollRepo.findOneOrFail({ creator }, { relations: ['creator', 'sections', 'sections.questions', 'child'] })
+    const data: CollectAnswersDto[] = [{ answers: [] }, { answers: [] }]
+
+    for (let i = 0; i < defaultPoll.sections.length; i++) {
+      for (let j = 0; j < defaultPoll.sections[i].questions.length; j++) {
+        for (let k = 0; k < 2; k++) {
+          data[k].answers.push({
+            questionId: defaultPoll.sections[i].questions[j].id,
+            text: `${k}+${i}+${j}`,
+          })
+        }
+      }
+    }
+
+    for (let i = 0; i < data.length; i++) {
+      const answerResponse = await request(app.getHttpServer())
+        .post(`/polls/${defaultPoll.id}/answers`)
+        .send(data[i])
+        .expect(201);
+      const pollRespondent: PollRespondent = answerResponse.body;
+      const answers: PollRespondentAnswers[] = await pollAnswersRepo.find({ where: { respondent: pollRespondent }, order: { text: 'ASC' }});
+      const expected = data[i].answers.sort((v1, v2) => v1.text.localeCompare(v2.text)).map((v) => ({ text: v.text, id: expect.any(String) }));
+      expect(answers).toEqual(expected);
+    }
+
+    await userRepo.delete({ username: 'poll-creator-for-answers@example.com' });
   })
 });

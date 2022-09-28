@@ -61,7 +61,7 @@ export class PollsController {
     }
   }
 
-  @Post(':id')
+  @Post(':id/answers')
   async collectAnswers(@Param('id') id: string, @Body() answers: CollectAnswersDto) {
     try {
       const _public = await this.pollsService.checkPublic(id);
