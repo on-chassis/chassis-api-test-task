@@ -24,12 +24,12 @@ Task is to implement an API that can do following:
 - [x] Update user's name, email, password (Authenticated, partial updates are OK)
 - [x] User can create a poll (Authenticated)
   - [x] Poll is a set of sections and questions within those sections (see below)
-- [ ] User can modify the default poll, but it should not affect other users (Authenticated)
-  - [ ] Once default poll is modified - it should be overwritten, without losing data about previous poll-sections-questions settings and already collected answers
-  - [ ] User can modify private polls without any restrictions and public polls using override mechanism (Authenticated)
+- [x] User can modify the default poll, but it should not affect other users (Authenticated)
+  - [x] Once default poll is modified - it should be overwritten, without losing data about previous poll-sections-questions settings and already collected answers
+  - [x] User can modify private polls without any restrictions and public polls using override mechanism (Authenticated)
 - [x] User can list all the polls available. Either default one or user created ones (Authenticated)
   - [x] Implement default poll prepopulate for new user profile
-- [ ] User can make a poll public, so non-registered users will be able to answer questions of the public poll (Public)
+- [x] User can make a poll public, so non-registered users will be able to answer questions of the public poll (Public)
 - [ ] All the answers given to a public polls are stored in the DB. They could be retrieved by poll.id.
 
 ### Default poll (always public)

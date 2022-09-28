@@ -4,7 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import {expect, jest, test} from '@jest/globals';
-
+import * as _ from 'lodash'
 
 import { AppModule } from './../src/app.module';
 import { User } from '../src/users/entities/user.entity';
@@ -144,7 +144,7 @@ describe('AppController (e2e)', () => {
     const updatedPollResponse = await request(app.getHttpServer())
       .patch(`/polls/${createdPollResponse.body.id}`)
       .auth(access_token, { type: "bearer" })
-      .send(pollCreationData)
+      .send(pollUpdateData)
       .expect(200);
 
     const poll = await pollRepo.findOne({ id: createdPollResponse.body.id }, { relations: ['creator', 'sections', 'sections.questions'] });
@@ -153,8 +153,8 @@ describe('AppController (e2e)', () => {
 
     const equalityCheckData: any = pollUpdateData;
     equalityCheckData.id = expect.any(String);
-    equalityCheckData._default = "0";
-    equalityCheckData._public = "0";
+    equalityCheckData._default = 0;
+    equalityCheckData._public = 0;
     equalityCheckData.creator = {
       id: expect.any(String),
       username: 'update-private@example.com',
@@ -170,5 +170,103 @@ describe('AppController (e2e)', () => {
     }
     expect(poll).toEqual(equalityCheckData);
     await userRepo.delete({ username: 'update-private@example.com' });
+  })
+
+  it('/polls (POST) update public with archivation', async () => {
+    const userRepo = app.get(getRepositoryToken(User));
+    const pollRepo = app.get(getRepositoryToken(Poll));
+    const userService = app.get(UsersService);
+    await userRepo.delete({ username: 'update-public@example.com' });
+
+    await request(app.getHttpServer())
+      .post('/user')
+      .send({ username: 'update-public@example.com', name: 'Dev', password: 'HelloWorld'})
+      .expect(201);
+
+    const { body: { access_token }} = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ username: 'update-public@example.com', password: 'HelloWorld'})
+      .expect(201);
+
+    const pollCreationData: CreatePollDto = {
+      title: 'example poll',
+      sections: [
+        {
+          title: 'section 1',
+          questions: [
+            {
+              text: 'question 1'
+            }
+          ]
+        }
+      ]
+    };
+
+    const createdPollResponse = await request(app.getHttpServer())
+      .post('/polls')
+      .auth(access_token, { type: "bearer" })
+      .send(pollCreationData)
+      .expect(201);
+
+    
+    const publishedPollResponse = await request(app.getHttpServer())
+      .post(`/polls/${createdPollResponse.body.id}/make_public`)
+      .auth(access_token, { type: "bearer" })
+      .expect(201);
+
+    const pollUpdateData = _.cloneDeep(pollCreationData);
+    pollUpdateData.sections[0].questions[0].text = 'updated public question 1 with archivation';
+
+    const updatedPollResponse = await request(app.getHttpServer())
+      .patch(`/polls/${publishedPollResponse.body.id}`)
+      .auth(access_token, { type: "bearer" })
+      .send(pollUpdateData)
+      .expect(200);
+
+    const checkData = (original: boolean) => {
+      const equalityCheckData: any = _.cloneDeep(pollCreationData);
+      equalityCheckData.id = original ? publishedPollResponse.body.id : updatedPollResponse.body.id;
+      equalityCheckData._default = 0;
+      equalityCheckData._public = 1;
+      equalityCheckData.creator = {
+        id: expect.any(String),
+        username: 'update-public@example.com',
+        name: 'Dev'
+      }
+      for (let i = 0; i < equalityCheckData.sections.length; i++) {
+        equalityCheckData.sections[i].id = original ? publishedPollResponse.body.sections[i].id : updatedPollResponse.body.sections[i].id;
+        equalityCheckData.sections[i].orderNumber = expect.any(Number);
+        for (let j = 0; j < equalityCheckData.sections[i].questions.length; j++) {
+          equalityCheckData.sections[i].questions[j].id = original ? publishedPollResponse.body.sections[i].questions[j].id : updatedPollResponse.body.sections[i].questions[j].id;
+          equalityCheckData.sections[i].questions[j].orderNumber = expect.any(Number);
+          equalityCheckData.sections[i].questions[j].text = original ? publishedPollResponse.body.sections[i].questions[j].text : updatedPollResponse.body.sections[i].questions[j].text;
+        }
+      }
+      return equalityCheckData;
+    }
+
+    const originalPublicTemplate = checkData(true);
+    const updatedTemplate = checkData(false);
+    
+    expect(publishedPollResponse.body).toEqual(originalPublicTemplate);
+    const originalPoll = await pollRepo.findOne({ id: publishedPollResponse.body.id }, { relations: ['creator', 'sections', 'sections.questions', 'child'] });
+    expect(originalPoll).toEqual({
+      ...originalPublicTemplate,
+      child: {
+        id: updatedPollResponse.body.id,
+        _default: updatedPollResponse.body._default,
+        _public: updatedPollResponse.body._public,
+        title: updatedPollResponse.body.title,
+      }
+    });
+
+    expect(updatedPollResponse.body).toEqual(updatedTemplate);
+    const poll = await pollRepo.findOne({ id: updatedPollResponse.body.id }, { relations: ['creator', 'sections', 'sections.questions', 'child'] });
+    expect(poll).toEqual({
+      ...updatedTemplate,
+      child: null,
+    });
+
+    await userRepo.delete({ username: 'update-public@example.com' });
   })
 });

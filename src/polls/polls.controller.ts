@@ -23,6 +23,15 @@ export class PollsController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @Post(':id/make_public')
+  async makePublic(@Param('id') id: string, @Request() req: Express.AuthenticatedRequest) {
+    const owner = await this.usersService.findOneBy(req.user);
+    await this.pollsService.checkOwnership(id, owner);
+    const result = await this.pollsService.changePollPublic(id, 1);
+    return result;
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   async findAll(@Request() req: Express.AuthenticatedRequest) {
     const owner = await this.usersService.findOneBy(req.user);
@@ -40,6 +49,7 @@ export class PollsController {
   async update(@Param('id') id: string, @Request() req: Express.AuthenticatedRequest, @Body() createPollDto: CreatePollDto) {
     try {
       const creator = await this.usersService.findOneBy(req.user);
+      await this.pollsService.checkOwnership(id, creator);
       return this.pollsService.update(id, createPollDto, creator);
     } catch (err: any) {
       return {
