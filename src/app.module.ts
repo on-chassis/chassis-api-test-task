@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PollsModule } from './polls/polls.module';
 import { User } from './users/entities/user.entity';
@@ -28,6 +27,5 @@ import { randomUUID } from 'crypto';
     UsersModule,
     PollsModule,
   ],
-  providers: [AppService],
 })
 export class AppModule {}
