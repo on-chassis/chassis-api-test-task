@@ -12,6 +12,8 @@ $ yarn install
 ```bash
 # development
 $ docker-compose up
+$ yarn db:migrate:local
+$ yarn test:e2e
 ```
 
 ## Test task
