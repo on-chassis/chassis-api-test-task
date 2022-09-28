@@ -12,8 +12,14 @@ export class PollsController {
   @UseGuards(AuthGuard('jwt'))
   @Post()
   async create(@Request() req: Express.AuthenticatedRequest, @Body() createPollDto: CreatePollDto) {
-    const creator = await this.usersService.findOneBy(req.user);
-    return this.pollsService.create(createPollDto, creator);
+    try {
+      const creator = await this.usersService.findOneBy(req.user);
+      return this.pollsService.create(createPollDto, creator);
+    } catch (err: any) {
+      return {
+        message: err.message
+      };
+    }
   }
 
   @UseGuards(AuthGuard('jwt'))

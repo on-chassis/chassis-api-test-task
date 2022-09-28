@@ -1,5 +1,10 @@
+import { IsArray, IsEmail, IsNotEmpty } from 'class-validator';
+
 export class CreatePollDto {
+    @IsNotEmpty()
     title: string;
+
+    @IsArray()
     sections: CreatePollSectionDto[];
 }
 

@@ -6,7 +6,8 @@ export class Poll {
   @PrimaryGeneratedColumn('uuid')
   id: string;  
 
-  @OneToOne(() => User, (user) => user.id, { cascade: false })
+  @OneToOne(() => User, (user) => user.id, { cascade: false, onDelete: 'CASCADE' })
+  @JoinColumn()
   creator: User
 
   @Column({ type: 'bit' })
@@ -19,9 +20,9 @@ export class Poll {
   @JoinColumn({ name: 'name' })
   sections: PollSection[];
 
-  @OneToOne(() => Poll, (child) => child.id, { cascade: false })
+  @OneToOne(() => Poll, (child) => child.id, { cascade: false, onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'overwrittenBy' })
-  readonly child: Poll;
+  readonly child?: Poll;
 
   @Column({ type: 'varchar' })
   title: string;
@@ -34,9 +35,9 @@ export class PollSection {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Poll, (poll) => poll.id, { cascade: false })
+  @ManyToOne(() => Poll, (poll) => poll.id, { cascade: false, onDelete: 'CASCADE' })
   @JoinColumn()
-  readonly poll: Poll;
+  poll: Poll;
 
   @Column({ type: 'varchar' })
   title: string;
@@ -54,9 +55,9 @@ export class PollQuestion {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => PollSection, (pollSection) => pollSection.id, { cascade: false })
+  @ManyToOne(() => PollSection, (pollSection) => pollSection.id, { cascade: false, onDelete: 'CASCADE' })
   @JoinColumn()
-  readonly section: PollSection;
+  section: PollSection;
 
   @Column({ type: 'varchar' })
   text: string;

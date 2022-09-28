@@ -9,35 +9,45 @@ import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class PollsService {
-  constructor(@InjectRepository(Poll) private readonly repo: Repository<Poll>) { }
+  constructor(
+    @InjectRepository(Poll) private readonly pollRepo: Repository<Poll>,
+    @InjectRepository(PollSection) private readonly pollSectionsRepo: Repository<PollSection>,
+    @InjectRepository(PollQuestion) private readonly pollQuestionsRepo: Repository<PollQuestion>,
+  ) { }
 
   async create(createPollDto: CreatePollDto, creator: User) {
     const poll = new Poll();
     poll._default = 0;
     poll._public = 0;
     poll.setCreator(creator);
-    poll.sections = [];
     poll.title = createPollDto.title;
-    if (!createPollDto.sections.length) throw new Error('Poll must have at least one section')
+    const pollResult = await this.pollRepo.insert(poll);
+    const pollId: string = pollResult.generatedMaps[0].id;
+    const pollModel = await this.pollRepo.findOneOrFail({ id: pollId });
     for (let i = 0; i < createPollDto.sections.length; i++) {
       const section = new PollSection();
+      section.poll = pollModel;
       section.orderNumber = i;
       section.title = createPollDto.sections[i].title;
-      section.questions = [];
-      if (!createPollDto.sections[i].questions.length) throw new Error('Section must have at least one question')
+      const sectionResult = await this.pollSectionsRepo.insert(section);
+      const sectionId: string = sectionResult.generatedMaps[0].id;
+      const sectionModel = await this.pollSectionsRepo.findOneOrFail({ id: sectionId });
       for (let j = 0; j < createPollDto.sections[i].questions.length; j++) {
         const question = new PollQuestion();
+        question.section = sectionModel;
         question.orderNumber = j;
         question.text = createPollDto.sections[i].questions[j].text;
-        section.questions.push(question);
+        await this.pollQuestionsRepo.insert(question);
       }
-      poll.sections.push(section)
     }
-    await this.repo.insert(poll);
+
+    return this.pollRepo.findOne({ id: pollId }, {
+      relations: ['creator', 'sections', 'sections.questions']
+    });
   }
 
   async findAll(owner: User) {
-    const result = await this.repo.find({ creator: owner, child: null });
+    const result = await this.pollRepo.find({ creator: owner, child: null });
     return result;
   }
 
