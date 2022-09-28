@@ -29,7 +29,9 @@ export class UsersService {
     user.username = createUserDto.username;
     user.name = createUserDto.name;
     await user.setPassword(createUserDto.password);
-    return this.repo.insert(user);
+    const result = await this.repo.insert(user);
+    const userId: string = result.generatedMaps[0].id;
+    return this.findOneBy({ id: userId });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -42,6 +44,7 @@ export class UsersService {
     if (updateUserDto.username) user.username = updateUserDto.username;
     if (updateUserDto.password) await user.setPassword(updateUserDto.password);
     if (updateUserDto.name) user.name = updateUserDto.name;
-    return this.repo.update({ id }, user);
+    await this.repo.update({ id }, user);
+    return this.findOneBy({ id });
   }
 }

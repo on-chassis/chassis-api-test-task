@@ -12,8 +12,15 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('user')
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    try {
+      const result = await this.usersService.create(createUserDto);
+      return result;
+    } catch (err: any) {
+      return {
+        message: err.message
+      };
+    }
   }
 
   @Get('user')
@@ -24,6 +31,12 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'))
   @Patch('user')
   update(@Request() req: Express.AuthenticatedRequest, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(req.user.id, updateUserDto);
+    try {
+      return this.usersService.update(req.user.id, updateUserDto);
+    } catch (err: any) {
+      return {
+        message: err.message
+      };
+    }
   }
 }
