@@ -19,6 +19,7 @@ import { UsersModule } from './users/users.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
+        name: `node-${process.pid}`,
         url: configService.get('DATABASE_URL'),
         entities: [User, Poll, PollSection, PollQuestion],
         synchronize: true,
