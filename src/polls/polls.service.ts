@@ -1,18 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as _ from 'lodash';
 
 import { CreatePollDto } from './dto/create-poll.dto';
 import { Poll, PollSection, PollQuestion } from './entities/poll.entity';
 import { UpdatePollDto } from './dto/update-poll.dto';
 import { User } from '../users/entities/user.entity';
-import * as _ from 'lodash';
+import { CollectAnswersDto } from './dto/collect-answers.dto';
+import { PollRespondent, PollRespondentAnswers } from './entities/answers.entity';
 @Injectable()
 export class PollsService {
   constructor(
     @InjectRepository(Poll) private readonly pollRepo: Repository<Poll>,
     @InjectRepository(PollSection) private readonly pollSectionsRepo: Repository<PollSection>,
     @InjectRepository(PollQuestion) private readonly pollQuestionsRepo: Repository<PollQuestion>,
+    @InjectRepository(PollQuestion) private readonly pollRespondentsRepo: Repository<PollRespondent>,
+    @InjectRepository(PollQuestion) private readonly pollRespondentAnswersRepo: Repository<PollRespondentAnswers>,
   ) { }
 
   async create(createPollDto: CreatePollDto, creator: User) {
@@ -51,8 +55,15 @@ export class PollsService {
     return result;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} poll`;
+  async checkPublic(id: string) {
+    const poll = await this.pollRepo.findOneOrFail({ where: { id }, relations: ['creator', 'sections', 'sections.questions'] });
+    return poll._public === 1
+  }
+
+  async findOne(id: string) {
+    const poll = await this.pollRepo.findOneOrFail({ where: { id }, relations: ['creator', 'sections', 'sections.questions'] });
+    if (poll._public === 0) throw new Error('You\'re trying to access private poll');
+    return poll;
   }
 
   async update(id: string, updatePollDto: UpdatePollDto, creator: User) {
@@ -143,5 +154,20 @@ export class PollsService {
 
   remove(id: number) {
     return `This action removes a #${id} poll`;
+  }
+
+  async collectAnswers(id: string, collectAnswersDto: CollectAnswersDto) {
+    const poll = await this.pollRepo.findOneOrFail({ id });
+    const pollRespondentResult = await this.pollRespondentsRepo.insert({ poll });
+    const pollRespondentId: string = pollRespondentResult.generatedMaps[0].id;
+    const pollRespondent = await this.pollRespondentsRepo.findOneOrFail({ id: pollRespondentId });
+    for (let i = 0; i < collectAnswersDto.answers.length; i++) {
+      const question = await this.pollQuestionsRepo.findOneOrFail({ id: collectAnswersDto.answers[i].questionId });
+      await this.pollRespondentAnswersRepo.insert({
+        question,
+        respondent: pollRespondent,
+        text: collectAnswersDto.answers[i].text
+      });
+    }
   }
 }
