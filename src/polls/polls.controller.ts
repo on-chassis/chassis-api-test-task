@@ -46,11 +46,11 @@ export class PollsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
-  async update(@Param('id') id: string, @Request() req: Express.AuthenticatedRequest, @Body() createPollDto: CreatePollDto) {
+  async update(@Param('id') id: string, @Request() req: Express.AuthenticatedRequest, @Body() updatePollDto: UpdatePollDto) {
     try {
       const creator = await this.usersService.findOneBy(req.user);
       await this.pollsService.checkOwnership(id, creator);
-      return this.pollsService.update(id, createPollDto, creator);
+      return this.pollsService.update(id, updatePollDto, creator);
     } catch (err: any) {
       return {
         message: err.message

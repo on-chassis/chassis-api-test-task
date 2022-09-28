@@ -11,7 +11,7 @@ COPY --chown=node:node package.json ./
 COPY --chown=node:node yarn.lock ./
 
 RUN yarn
-RUN npm i -g @nestjs/cli
+RUN yarn global add @nestjs/cli
 
 COPY --chown=node:node . .
 
