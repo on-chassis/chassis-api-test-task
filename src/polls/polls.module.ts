@@ -6,7 +6,6 @@ import { User } from '../users/entities/user.entity'
 import { PollsController } from './polls.controller';
 import { PollsService } from './polls.service';
 import { UsersService } from '../users/users.service';
-import { User } from '../users/entities/user.entity';
 
 @Module({
   controllers: [PollsController],
