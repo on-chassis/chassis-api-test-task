@@ -53,5 +53,5 @@ Task is to implement an API that can do following:
 ## Deliverables:
 - [x] Working API with instructions how to run it. Better if deployed somewhere (e.g. Heroku).
 - [x] Endpoints description w/contracts (Better if it's accessible Swagger)
-- [ ] Description of solution drawbacks/limitations
-- [ ] PR to this repo / Link to a github repo with implemented test task
+- [x] Description of solution drawbacks/limitations
+- [x] PR to this repo / Link to a github repo with implemented test task
