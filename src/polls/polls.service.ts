@@ -55,8 +55,31 @@ export class PollsService {
     return `This action returns a #${id} poll`;
   }
 
-  update(id: number, updatePollDto: UpdatePollDto) {
-    return `This action updates a #${id} poll`;
+  async update(id: string, createPollDto: CreatePollDto, creator: User) {
+    const poll = await this.pollRepo.findOneOrFail({ id });
+    poll.title = createPollDto.title;
+    await this.pollRepo.update({ id }, poll);
+    const pollModel = await this.pollRepo.findOneOrFail({ id });
+    for (let i = 0; i < createPollDto.sections.length; i++) {
+      await this.pollSectionsRepo.delete({ poll: pollModel });
+      const section = new PollSection();
+      section.poll = pollModel;
+      section.orderNumber = i;
+      section.title = createPollDto.sections[i].title;
+      const sectionResult = await this.pollSectionsRepo.insert(section);
+      const sectionId: string = sectionResult.generatedMaps[0].id;
+      const sectionModel = await this.pollSectionsRepo.findOneOrFail({ id: sectionId });
+      for (let j = 0; j < createPollDto.sections[i].questions.length; j++) {
+        const question = new PollQuestion();
+        question.section = sectionModel;
+        question.orderNumber = j;
+        question.text = createPollDto.sections[i].questions[j].text;
+        await this.pollQuestionsRepo.insert(question);
+      }
+    }
+    return this.pollRepo.findOne({ id }, {
+      relations: ['creator', 'sections', 'sections.questions']
+    });
   }
 
   remove(id: number) {

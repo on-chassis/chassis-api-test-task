@@ -98,4 +98,74 @@ describe('AppController (e2e)', () => {
     expect(poll).toEqual(response.body);
     await userRepo.delete({ username: 'poll-creator@example.com' });
   })
+
+  it('/polls (POST) update private', async () => {
+    const userRepo = app.get(getRepositoryToken(User));
+    const pollRepo = app.get(getRepositoryToken(Poll));
+    const userService = app.get(UsersService);
+    await userRepo.delete({ username: 'update-private@example.com' });
+
+    await request(app.getHttpServer())
+      .post('/user')
+      .send({ username: 'update-private@example.com', name: 'Dev', password: 'HelloWorld'})
+      .expect(201);
+
+    const { body: { access_token }} = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ username: 'update-private@example.com', password: 'HelloWorld'})
+      .expect(201);
+
+    const pollCreationData: CreatePollDto = {
+      title: 'example poll',
+      sections: [
+        {
+          title: 'section 1',
+          questions: [
+            {
+              text: 'question 1'
+            }
+          ]
+        }
+      ]
+    };
+
+    const createdPollResponse = await request(app.getHttpServer())
+      .post('/polls')
+      .auth(access_token, { type: "bearer" })
+      .send(pollCreationData)
+      .expect(201);
+
+    const pollUpdateData = pollCreationData;
+    pollUpdateData.sections[0].questions[0].text = 'updated question 1';
+
+    const updatedPollResponse = await request(app.getHttpServer())
+      .patch(`/polls/${createdPollResponse.body.id}`)
+      .auth(access_token, { type: "bearer" })
+      .send(pollCreationData)
+      .expect(200);
+
+    const poll = await pollRepo.findOne({ id: createdPollResponse.body.id }, { relations: ['creator', 'sections', 'sections.questions'] });
+    console.log(JSON.stringify(poll));
+    expect(poll).toEqual(updatedPollResponse.body);
+
+    const equalityCheckData: any = pollUpdateData;
+    equalityCheckData.id = expect.any(String);
+    equalityCheckData._default = "0";
+    equalityCheckData._public = "0";
+    equalityCheckData.creator = {
+      id: expect.any(String),
+      username: 'update-private@example.com',
+      name: 'Dev'
+    }
+    for (let i = 0; i < equalityCheckData.sections.length; i++) {
+      equalityCheckData.sections[i].id = expect.any(String);
+      equalityCheckData.sections[i].orderNumber = expect.any(Number);
+      for (let j = 0; j < equalityCheckData.sections[i].questions.length; j++) {
+        equalityCheckData.sections[i].questions[j].id = expect.any(String);
+        equalityCheckData.sections[i].questions[j].orderNumber = expect.any(Number);
+      }
+    }
+    expect(poll).toEqual(equalityCheckData);
+    await userRepo.delete({ username: 'update-private@example.com' });
+  })
 });

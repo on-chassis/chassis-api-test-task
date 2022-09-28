@@ -35,9 +35,18 @@ export class PollsController {
     return this.pollsService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePollDto: UpdatePollDto) {
-    return this.pollsService.update(+id, updatePollDto);
+  async update(@Param('id') id: string, @Request() req: Express.AuthenticatedRequest, @Body() createPollDto: CreatePollDto) {
+    try {
+      const creator = await this.usersService.findOneBy(req.user);
+      return this.pollsService.update(id, createPollDto, creator);
+    } catch (err: any) {
+      return {
+        message: err.message
+      };
+    }
+    
   }
 
   @Delete(':id')
