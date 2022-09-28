@@ -47,7 +47,7 @@ Task is to implement an API that can do following:
 - [x] DB is Postgres
 - [x] Framework is nestjs
 - [x] Types are important
-- [ ] Tests are welcomed
+- [x] Tests are welcomed
 - [ ] Linter is set up, feel free to update linter rules
 
 ## Deliverables:
