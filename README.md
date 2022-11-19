@@ -11,18 +11,24 @@ $ yarn install
 $ docker-compose up
 ```
 
-## Test task
-Task is to implement an API that can do following:
-* Sign up / Sign in for a user
-  * Email / Password credentials is a must
-  * OAuth via Google - additional, nice to have, not required
-* Update user's name, email, password (Authenticated, partial updates are OK)
-* User can create a poll (Authenticated)
-  * Poll is a set of sections and questions within those sections (see below)
-* User can modify the default poll, but it should not affect other users (Authenticated)
-* User can list all the polls available. Either default one or user created ones (Authenticated)
-* User can make a poll public, so non-registered users will be able to answer questions of the public poll (Public)
-* All the answers given to a public polls are stored in the DB. They could be retrieved by poll.id.
+## Description
+Your task is to implement API for polling mechanism which will allow users to create their own polls so others can take these surveys and answer some questions.
+Polls have sections, so we can split up a long poll into several pages (one page - one section). At least one section per poll for consistency.
+Sections have questions. At least one question in section.
+
+Every user should have a default poll to start from (which should be available for sending it to respondents right away).
+
+If User A changes the default poll it should remain unchanged for others.
+
+Users should have an ability to mark a poll as `nonPublic` so only registered users will have an access to that poll. Otherwise - it's open for everyone.
+
+## Required functionality:
+* Sign up / Sign in via email + password.
+* Create / Update / Delete a poll (protected)
+* Create / Update / Delete a section within poll (protected)
+* Create / Update / Delete a question within section (protected)
+* Retrieve a single poll by id. Keep in mind `nonPublic` flag, so non-public polls won't be available for unregistered users.  
+* Retrieve all polls for a particular user. Keep in mind `nonPublic` flag, so non-public polls won't be available for unregistered users.
 
 ### Default poll (always public)
 * Company info (section)
@@ -32,20 +38,27 @@ Task is to implement an API that can do following:
   * What is your name?
   * How old are you?
 
-### Polls details
-* Polls can have unlimited amount of sections and have at least one section. 
-* Every section has questions. At least one in a section.
+### Important details
 * Questions have freeform answers
+* Poll has `description` field that can be updated
+* Section has `description` field that can be updated
+* Only registered users can retrieve `nonPublic` polls
+
+## What is not expected to be implemented
+* User details update
+* Password reset
+* Email sending
+* Answers submission
 
 ## Limitations:
 * DB is Postgres
 * Framework is nestjs
 * Types are important
 * Tests are welcomed
-* Linter is set up, feel free to update linter rules
+* Linter is set up, feel free to update linter rules. Please use it before committing the code.
 
 ## Deliverables:
 * Working API with instructions how to run it. Better if deployed somewhere (e.g. Heroku).
 * Endpoints description w/contracts (Better if it's accessible Swagger)
 * Description of solution drawbacks/limitations
-* PR to this repo / Link to a github repo with implemented test task
+* PR to this repo from the branch/fork you've created to complete the challenge
