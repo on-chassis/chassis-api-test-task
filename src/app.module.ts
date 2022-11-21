@@ -10,6 +10,7 @@ import authConfig from './config/auth.config';
 import dbConfig from './config/db.config';
 import { TypeOrmConfigService } from './config/typeorm.service';
 import { HealthModule } from './health/health.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { HealthModule } from './health/health.module';
       },
     }),
     HealthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
