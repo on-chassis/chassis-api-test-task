@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   postgres:
     image: postgres:14
@@ -14,11 +15,34 @@ services:
       - ./pgdata/data:/var/lib/postgresql/data
     networks:
       - testtask
+
+  postgres.ui:
+    image: sosedoff/pgweb
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB_NAME}?sslmode=disable
+    ports: 
+      - 8081:8081
+    networks:
+      - testtask
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+        tag: "{{.ImageName}}|{{.Name}}"     
+
   testapi:
     env_file:
       - ./.env
+    depends_on:
+      - postgres
     links:
-        - postgres:postgres
+      - postgres
     volumes:
       - .:/usr/src/app
     build:
@@ -26,12 +50,14 @@ services:
       target: development
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB_NAME}
+      PORT: ${PORT:-3000}
     command: yarn start:dev
     ports:
-      - "80:3000"
+      - 80:${PORT:-3000}
     depends_on:
       - postgres
     networks:
       - testtask
+
 networks:
   testtask:

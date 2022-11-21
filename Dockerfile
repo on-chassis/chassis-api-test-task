@@ -1,4 +1,5 @@
 ARG DATABASE_URL
+ARG PORT
 ARG JWT_KEY
 ARG JWT_EXPIRES
 
@@ -29,6 +30,7 @@ COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modul
 COPY --chown=node:node . .
 
 ARG DATABASE_URL
+ARG PORT
 ARG JWT_KEY
 ARG JWT_EXPIRES
 
