@@ -13,8 +13,19 @@ services:
       - "5432:5432"
     volumes:
       - ./pgdata/data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - testtask
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+        tag: "{{.ImageName}}|{{.Name}}"     
 
   postgres.ui:
     image: sosedoff/pgweb
@@ -29,6 +40,9 @@ services:
       - 8081:8081
     networks:
       - testtask
+    healthcheck:
+      test: ["CMD", "nc", "-vz", "127.0.0.1", "8081"] # netcat is pushed but not published yet =( 
+      interval: 5s
     logging:
       driver: "json-file"
       options:
@@ -56,8 +70,19 @@ services:
       - 80:${PORT:-3000}
     depends_on:
       - postgres
+    healthcheck:
+      test: curl -f http://localhost:${PORT:-3000} || exit 1
+      interval: 5s
+      timeout: 10s
+      retries: 3
     networks:
       - testtask
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+        tag: "{{.ImageName}}|{{.Name}}"     
 
 networks:
   testtask:
