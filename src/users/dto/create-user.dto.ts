@@ -5,8 +5,10 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsEmail()
   @Transform(({ value }) => value.trim().toLowerCase())
-  email: string | null;
+  email: string;
 
+  @IsNotEmpty()
   @MinLength(3)
-  password?: string;
+  @Transform(({ value }) => value.trim())
+  password: string;
 }

@@ -1,3 +1,4 @@
+import { Factory } from 'nestjs-seeder';
 import {
   Column,
   CreateDateColumn,
@@ -5,18 +6,26 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   BaseEntity,
+  OneToMany,
 } from 'typeorm';
+
+import { Poll } from '../../polls/entities/poll.entity';
 
 @Entity()
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Factory((faker) => faker.internet.email())
+  @Column({ unique: true, nullable: false })
   email: string;
 
-  @Column()
+  @Factory('password')
+  @Column({ nullable: false })
   password: string;
+
+  @OneToMany(() => Poll, (poll) => poll.user, { cascade: true })
+  polls: Poll[];
 
   @CreateDateColumn()
   createdAt: Date;

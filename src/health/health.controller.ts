@@ -24,7 +24,6 @@ export class HealthController {
     this.startTime = dayjs();
   }
 
-  // !! TODO !!
   @Get()
   @HealthCheck()
   @ApiOperation({ summary: 'Healthcheck API status and uptime' })
@@ -33,33 +32,33 @@ export class HealthController {
       () => this.http.pingCheck('APP', `http://localhost:${process.env.PORT}`), // this is internal docker address
       () =>
         this.http.pingCheck('DOCS', `http://localhost:${process.env.PORT}/api`),
-      // () =>
-      //   this.http.responseCheck(
-      //     'USER',
-      //     `http://localhost:${process.env.PORT}/user`,
-      //     (res) => res.status === 204,
-      //   ),
-      // () =>
-      //   this.http.responseCheck(
-      //     'POLL',
-      //     `http://localhost:${process.env.PORT}/poll`,
-      //     (res) => res.status === 204,
-      //   ),
-      // () =>
-      //   this.http.responseCheck(
-      //     'SECTION',
-      //     `http://localhost:${process.env.PORT}/section`,
-      //     (res) => res.status === 204,
-      //   ),
-      // () =>
-      //   this.http.responseCheck(
-      //     'QUESTION',
-      //     `http://localhost:${process.env.PORT}/question`,
-      //     (res) => res.status === 204,
-      //   ),
-      // () => this.db.pingCheck('database'),
+      () =>
+        this.http.responseCheck(
+          'USERS',
+          `http://localhost:${process.env.PORT}/users`,
+          (res) => res.status === 200,
+        ),
+      () =>
+        this.http.responseCheck(
+          'POLLS',
+          `http://localhost:${process.env.PORT}/polls`,
+          (res) => res.status === 200,
+        ),
+      () =>
+        this.http.responseCheck(
+          'SECTIONS',
+          `http://localhost:${process.env.PORT}/sections`,
+          (res) => res.status === 200,
+        ),
+      () =>
+        this.http.responseCheck(
+          'QUESTIONS',
+          `http://localhost:${process.env.PORT}/questions`,
+          (res) => res.status === 200,
+        ),
+      () => this.db.pingCheck('DB'),
       () => ({
-        UPTIME: {
+        INFO: {
           status: 'up',
           started: this.startTime.format(),
           uptime: this.startTime.fromNow(),

@@ -31,7 +31,9 @@
     "db:migration:create": "yarn typeorm -- migration:create --name ",
     "db:migration:create:local": "yarn typeorm:local -- migration:create --name ",
     "db:migration:generate": "yarn typeorm -- migration:generate --name ",
-    "db:migration:generate:local": "yarn typeorm:local -- migration:generate --name "
+    "db:migration:generate:local": "yarn typeorm:local -- migration:generate --name ",
+    "seed": "node dist/seeder",
+    "seed:refresh": "node dist/seeder --refresh"
   },
   "dependencies": {
     "@nestjs/axios": "^1.0.0",
@@ -54,9 +56,11 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "typeorm": "^0.3.10",
+    "typeorm-naming-strategies": "^4.1.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
@@ -74,6 +78,7 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-prettier": "4.0.0",
     "jest": "28.0.3",
+    "nestjs-seeder": "^0.3.0",
     "prettier": "2.3.2",
     "source-map-support": "^0.5.20",
     "supertest": "^6.1.3",

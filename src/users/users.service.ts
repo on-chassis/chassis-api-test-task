@@ -14,9 +14,9 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  create(createProfileDto: CreateUserDto) {
+  create(createUserDto: CreateUserDto) {
     return this.usersRepository.save(
-      this.usersRepository.create(createProfileDto),
+      this.usersRepository.create(createUserDto),
     );
   }
 
@@ -36,11 +36,11 @@ export class UsersService {
     });
   }
 
-  update(id: string, updateProfileDto: UpdateUserDto) {
+  update(id: string, updateUserDto: UpdateUserDto) {
     return this.usersRepository.save(
       this.usersRepository.create({
         id,
-        ...updateProfileDto,
+        ...updateUserDto,
       }),
     );
   }

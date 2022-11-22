@@ -8,7 +8,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @IsEmail()
   @Transform(({ value }) => value.trim().toLowerCase())
-  email?: string | null;
+  email?: string;
 
   @IsOptional()
   @MinLength(3)

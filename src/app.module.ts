@@ -10,6 +10,9 @@ import authConfig from './config/auth.config';
 import dbConfig from './config/db.config';
 import { TypeOrmConfigService } from './config/typeorm.service';
 import { HealthModule } from './health/health.module';
+import { PollsModule } from './polls/polls.module';
+import { QuestionsModule } from './questions/questions.module';
+import { SectionsModule } from './sections/sections.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -23,11 +26,15 @@ import { UsersModule } from './users/users.module';
       useClass: TypeOrmConfigService,
       dataSourceFactory: async (options) => {
         const dataSource = await new DataSource(options).initialize();
+
         return dataSource;
       },
     }),
     HealthModule,
     UsersModule,
+    PollsModule,
+    SectionsModule,
+    QuestionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
