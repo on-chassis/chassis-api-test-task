@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import { Factory } from 'nestjs-seeder';
 import {
   Column,
@@ -8,6 +9,7 @@ import {
   BaseEntity,
   OneToMany,
   BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 
 import { Poll } from '../../polls/entities/poll.entity';
@@ -22,7 +24,7 @@ export class User extends BaseEntity {
   email: string;
 
   @Factory('password')
-  @Column({ nullable: false })
+  @Column({ nullable: false, select: false })
   password: string;
 
   @OneToMany(() => Poll, (poll) => poll.user, { cascade: true })
@@ -35,7 +37,12 @@ export class User extends BaseEntity {
   updatedAt: Date;
 
   @BeforeInsert()
-  async emitCreatedEvent() {
-    // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+  @BeforeUpdate()
+  async hashPassword() {
+    if (this.password) {
+      const salt = await bcrypt.genSalt();
+
+      this.password = await bcrypt.hash(this.password, salt);
+    }
   }
 }
