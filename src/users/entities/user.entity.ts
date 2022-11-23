@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   BaseEntity,
   OneToMany,
+  BeforeInsert,
 } from 'typeorm';
 
 import { Poll } from '../../polls/entities/poll.entity';
@@ -32,4 +33,9 @@ export class User extends BaseEntity {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @BeforeInsert()
+  async emitCreatedEvent() {
+    // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+  }
 }
