@@ -48,6 +48,12 @@ export class UsersService {
     });
   }
 
+  findByEmail(email: string) {
+    return this.usersRepository.findOneBy({
+      email,
+    });
+  }
+
   update(id: string, updateUserDto: UpdateUserDto) {
     return this.usersRepository.save(
       this.usersRepository.create({
