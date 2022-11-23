@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import {
   HealthCheckService,
@@ -8,6 +8,7 @@ import {
 } from '@nestjs/terminus';
 import * as dayjs from 'dayjs';
 import * as relativeTime from 'dayjs/plugin/relativeTime';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 dayjs.extend(relativeTime);
 
@@ -24,6 +25,7 @@ export class HealthController {
     this.startTime = dayjs();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   @HealthCheck()
   @ApiOperation({ summary: 'Healthcheck API status and uptime' })

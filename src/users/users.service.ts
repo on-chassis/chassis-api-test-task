@@ -54,6 +54,18 @@ export class UsersService {
     });
   }
 
+  findForSignInExposedPW(email: string) {
+    const user = this.usersRepository
+      .createQueryBuilder()
+      .select('User.id')
+      .addSelect('User.password')
+      .addSelect('User.email')
+      .where('User.email = :email', { email })
+      .getOne();
+
+    return user;
+  }
+
   update(id: string, updateUserDto: UpdateUserDto) {
     return this.usersRepository.save(
       this.usersRepository.create({
