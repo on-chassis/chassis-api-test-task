@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { useContainer } from 'class-validator';
 import * as cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { nestCsrf, CsrfFilter } from 'ncsrf';
@@ -19,6 +20,14 @@ async function bootstrap() {
 
   app.useGlobalFilters(new CsrfFilter());
 
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
+
   const config = new DocumentBuilder()
     .setTitle('Test task API')
     .setDescription('The test task API description')
@@ -27,13 +36,6 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-    }),
-  );
 
   await app.listen(process.env.PORT);
 }

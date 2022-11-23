@@ -63,6 +63,7 @@ export class PollsService {
   async handleUserCreatedEvent(event: UserCreatedEvent) {
     // handle and process "UserCreatedEvent" event
 
+    // TODO: Implement transactions: https://docs.nestjs.com/techniques/database#typeorm-transactions
     const newPoll: CreatePollWithUserDto = {
       name: `Poll #1: ${event.payload.email}`,
       nonPublic: false,
