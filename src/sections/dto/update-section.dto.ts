@@ -1,6 +1,13 @@
 import { PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsOptional, MinLength, IsUUID, IsNumber } from 'class-validator';
+import {
+  IsOptional,
+  MinLength,
+  IsUUID,
+  IsNumber,
+  Validate,
+} from 'class-validator';
+import { EntityExistsConstraint } from 'src/validators/entity-exists.validator';
 
 import { CreateSectionDto } from './create-section.dto';
 
@@ -17,6 +24,9 @@ export class UpdateSectionDto extends PartialType(CreateSectionDto) {
 
   @IsOptional()
   @IsUUID()
+  @Validate(EntityExistsConstraint, ['Poll'], {
+    message: 'Poll Not Found',
+  })
   pollId?: string;
 
   @IsOptional()

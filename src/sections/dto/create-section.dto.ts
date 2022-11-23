@@ -5,7 +5,9 @@ import {
   MinLength,
   IsUUID,
   IsNumber,
+  Validate,
 } from 'class-validator';
+import { EntityExistsConstraint } from 'src/validators/entity-exists.validator';
 
 export class CreateSectionDto {
   @IsNotEmpty()
@@ -20,6 +22,9 @@ export class CreateSectionDto {
 
   @IsOptional()
   @IsUUID()
+  @Validate(EntityExistsConstraint, ['Poll'], {
+    message: 'Poll Not Found',
+  })
   pollId?: string;
 
   @IsOptional()
