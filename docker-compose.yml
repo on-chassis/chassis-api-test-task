@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB_NAME}
       PG_DATA: /var/lib/postgresql/data
-    restart: always
+    restart: on-failure
     ports:
       - "5432:5432"
     volumes:
@@ -29,6 +29,7 @@ services:
 
   postgres.ui:
     image: sosedoff/pgweb
+    restart: on-failure
     depends_on:
       - postgres
     links:
@@ -51,6 +52,7 @@ services:
         tag: "{{.ImageName}}|{{.Name}}"     
 
   testapi:
+    restart: on-failure
     env_file:
       - ./.env
     depends_on:
@@ -65,7 +67,7 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB_NAME}
       PORT: ${PORT:-3000}
-    command: yarn start:dev
+    command: wait-for-it postgres:5432 -s -t 60 -- yarn start:dev
     ports:
       - 80:${PORT:-3000}
     depends_on:

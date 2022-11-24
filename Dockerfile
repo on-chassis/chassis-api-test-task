@@ -6,6 +6,8 @@ ARG JWT_EXPIRES
 # BUILD DEV
 FROM node:latest AS development
 
+RUN apt-get update && apt-get install -y "wait-for-it"
+
 WORKDIR /usr/src/app
 
 COPY --chown=node:node package.json ./
