@@ -70,11 +70,11 @@ services:
       - 80:${PORT:-3000}
     depends_on:
       - postgres
-    # healthcheck:
-    #   test: curl -f http://localhost:${PORT:-3000} || exit 1
-    #   interval: 5s
-    #   timeout: 10s
-    #   retries: 3
+    healthcheck:
+      test: curl -f http://localhost:${PORT:-3000} || exit 1
+      interval: 5s
+      timeout: 10s
+      retries: 3
     networks:
       - testtask
     logging:
