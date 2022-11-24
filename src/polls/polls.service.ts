@@ -46,6 +46,25 @@ export class PollsService {
     });
   }
 
+  findAllByUserId(userId: string, full = false) {
+    return this.pollsRepository.find({
+      where: {
+        userId,
+      },
+      relations: (full && ['sections', 'sections.questions']) || [],
+    });
+  }
+
+  findPublicByUserId(userId: string, full = false) {
+    return this.pollsRepository.find({
+      where: {
+        userId,
+        nonPublic: false,
+      },
+      relations: (full && ['sections', 'sections.questions']) || [],
+    });
+  }
+
   update(id: string, updatePollDto: UpdatePollDto) {
     return this.pollsRepository.save(
       this.pollsRepository.create({

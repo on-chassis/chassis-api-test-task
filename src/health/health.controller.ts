@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import {
   HealthCheckService,
@@ -8,7 +8,7 @@ import {
 } from '@nestjs/terminus';
 import * as dayjs from 'dayjs';
 import * as relativeTime from 'dayjs/plugin/relativeTime';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { AllowAny } from 'src/decorators/allow-all.decorator';
 
 dayjs.extend(relativeTime);
 
@@ -25,8 +25,8 @@ export class HealthController {
     this.startTime = dayjs();
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
+  @AllowAny()
   @HealthCheck()
   @ApiOperation({ summary: 'Healthcheck API status and uptime' })
   check() {
@@ -38,25 +38,25 @@ export class HealthController {
         this.http.responseCheck(
           'USERS',
           `http://localhost:${process.env.PORT}/users`,
-          (res) => res.status === 200,
+          (res) => res.status === 401,
         ),
       () =>
         this.http.responseCheck(
           'POLLS',
           `http://localhost:${process.env.PORT}/polls`,
-          (res) => res.status === 200,
+          (res) => res.status === 401,
         ),
       () =>
         this.http.responseCheck(
           'SECTIONS',
           `http://localhost:${process.env.PORT}/sections`,
-          (res) => res.status === 200,
+          (res) => res.status === 401,
         ),
       () =>
         this.http.responseCheck(
           'QUESTIONS',
           `http://localhost:${process.env.PORT}/questions`,
-          (res) => res.status === 200,
+          (res) => res.status === 401,
         ),
       () => this.db.pingCheck('DB'),
       () => ({

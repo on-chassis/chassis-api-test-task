@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -29,17 +30,20 @@ export class SectionsController {
   }
 
   @Get(':id')
-  findById(@Param('id') id: string) {
+  findById(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.sectionsService.findById(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSectionDto: UpdateSectionDto) {
+  update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() updateSectionDto: UpdateSectionDto,
+  ) {
     return this.sectionsService.update(id, updateSectionDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.sectionsService.remove(id);
   }
 }
