@@ -1,3 +1,4 @@
+import { RequestContextModule } from '@medibloc/nestjs-request-context';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD, Reflector } from '@nestjs/core';
@@ -5,6 +6,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
+import { AppContext } from './app.context';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -34,6 +36,10 @@ import { UsersModule } from './users/users.module';
 
         return dataSource;
       },
+    }),
+    RequestContextModule.forRoot({
+      contextClass: AppContext,
+      isGlobal: true,
     }),
     HealthModule,
     UsersModule,

@@ -9,9 +9,9 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthUser } from 'src/app.context';
 import { AllowAny } from 'src/decorators/allow-all.decorator';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
-import { AuthUser } from 'src/storage/user.storage';
 
 import { CreatePollDto } from './dto/create-poll.dto';
 import { UpdatePollDto } from './dto/update-poll.dto';

@@ -1,3 +1,4 @@
+import { RequestContext } from '@medibloc/nestjs-request-context';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import {
@@ -5,7 +6,7 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
 } from 'class-validator';
-import { AuthUser, UserStorage } from 'src/storage/user.storage';
+import { AppContext, AuthUser } from 'src/app.context';
 import { DataSource } from 'typeorm';
 
 type EntityBeingValidated = {
@@ -26,7 +27,8 @@ export class OwnerValidConstraint implements ValidatorConstraintInterface {
   ) {}
 
   async validate(value: any, args: ValidationArguments): Promise<boolean> {
-    const user: AuthUser = UserStorage.get();
+    const ctx: AppContext = RequestContext.get();
+    const user: AuthUser = ctx.user;
 
     let valueBeingChecked = value;
 
@@ -38,8 +40,6 @@ export class OwnerValidConstraint implements ValidatorConstraintInterface {
             id: valueBeingChecked,
           },
         })) as EntityBeingValidated;
-
-      console.log(user, existingEntity, entityRepository);
 
       if (!!existingEntity) {
         valueBeingChecked = existingEntity[entityRepository.property];

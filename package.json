@@ -36,6 +36,7 @@
     "seed:refresh": "node dist/seeder --refresh"
   },
   "dependencies": {
+    "@medibloc/nestjs-request-context": "^1.0.1",
     "@nestjs/axios": "^1.0.0",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.2.0",

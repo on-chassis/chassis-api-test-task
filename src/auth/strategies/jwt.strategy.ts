@@ -1,8 +1,9 @@
+import { RequestContext } from '@medibloc/nestjs-request-context';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { AuthUser, UserStorage } from 'src/storage/user.storage';
+import { AppContext, AuthUser } from 'src/app.context';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -18,7 +19,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     // TODO: Better to provide User object here by connecting dataSource and repo
     const user = { id: payload.id };
 
-    UserStorage.set(user);
+    const ctx: AppContext = RequestContext.get();
+    ctx.user = user;
 
     return user;
   }
