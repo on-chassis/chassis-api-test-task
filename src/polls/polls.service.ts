@@ -10,7 +10,6 @@ import { UserCreatedEvent } from 'src/users/events/user-created.event';
 import { FindOptionsWhere } from 'typeorm';
 import { Repository } from 'typeorm';
 
-import { CreatePollWithUserDto } from './dto/create-poll-with-user.dto';
 import { CreatePollDto } from './dto/create-poll.dto';
 import { UpdatePollDto } from './dto/update-poll.dto';
 import { Poll } from './entities/poll.entity';
@@ -24,9 +23,12 @@ export class PollsService {
     private questionsService: QuestionsService,
   ) {}
 
-  create(createPollDto: CreatePollDto) {
+  create(createPollDto: CreatePollDto, userId: string) {
     return this.pollsRepository.save(
-      this.pollsRepository.create(createPollDto),
+      this.pollsRepository.create({
+        ...createPollDto,
+        userId,
+      }),
     );
   }
 
@@ -83,13 +85,12 @@ export class PollsService {
     // handle and process "UserCreatedEvent" event
 
     // TODO: Implement transactions: https://docs.nestjs.com/techniques/database#typeorm-transactions
-    const newPoll: CreatePollWithUserDto = {
+    const newPoll: CreatePollDto = {
       name: `Poll #1: ${event.payload.email}`,
       nonPublic: false,
-      userId: event.userId,
     };
 
-    const poll: Poll = await this.create(newPoll);
+    const poll: Poll = await this.create(newPoll, event.userId);
 
     const sections: { name: string; orderBy: number; questions: string[] }[] = [
       {

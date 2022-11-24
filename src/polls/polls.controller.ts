@@ -9,9 +9,9 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthUser } from 'src/auth/strategies/jwt.strategy';
 import { AllowAny } from 'src/decorators/allow-all.decorator';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
+import { AuthUser } from 'src/storage/user.storage';
 
 import { CreatePollDto } from './dto/create-poll.dto';
 import { UpdatePollDto } from './dto/update-poll.dto';
@@ -23,8 +23,8 @@ export class PollsController {
   constructor(private readonly pollsService: PollsService) {}
 
   @Post()
-  create(@Body() createPollDto: CreatePollDto) {
-    return this.pollsService.create(createPollDto);
+  create(@CurrentUser() user: AuthUser, @Body() createPollDto: CreatePollDto) {
+    return this.pollsService.create(createPollDto, user.id);
   }
 
   @Get()

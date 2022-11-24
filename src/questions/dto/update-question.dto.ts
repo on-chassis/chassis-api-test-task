@@ -8,6 +8,10 @@ import {
   Validate,
 } from 'class-validator';
 import { EntityExistsConstraint } from 'src/validators/entity-exists.validator';
+import {
+  EntityCheckNode,
+  OwnerValidConstraint,
+} from 'src/validators/owner-valid.validator';
 
 import { CreateQuestionDto } from './create-question.dto';
 
@@ -22,6 +26,22 @@ export class UpdateQuestionDto extends PartialType(CreateQuestionDto) {
   @Validate(EntityExistsConstraint, ['Section'], {
     message: 'Section Not Found',
   })
+  @Validate(
+    OwnerValidConstraint,
+    [
+      {
+        repository: 'Section',
+        property: 'pollId',
+      },
+      {
+        repository: 'Poll',
+        property: 'userId',
+      },
+    ] as EntityCheckNode[],
+    {
+      message: 'Entity owner invalid',
+    },
+  )
   sectionId?: string;
 
   @IsOptional()

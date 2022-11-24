@@ -8,6 +8,10 @@ import {
   Validate,
 } from 'class-validator';
 import { EntityExistsConstraint } from 'src/validators/entity-exists.validator';
+import {
+  EntityCheckNode,
+  OwnerValidConstraint,
+} from 'src/validators/owner-valid.validator';
 
 export class CreateSectionDto {
   @IsNotEmpty()
@@ -25,6 +29,18 @@ export class CreateSectionDto {
   @Validate(EntityExistsConstraint, ['Poll'], {
     message: 'Poll Not Found',
   })
+  @Validate(
+    OwnerValidConstraint,
+    [
+      {
+        repository: 'Poll',
+        property: 'userId',
+      },
+    ] as EntityCheckNode[],
+    {
+      message: 'Entity owner invalid',
+    },
+  )
   pollId?: string;
 
   @IsOptional()
