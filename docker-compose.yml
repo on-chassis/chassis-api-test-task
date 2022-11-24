@@ -82,12 +82,23 @@ services:
       retries: 3
     networks:
       - testtask
+      - traefik-public
     logging:
       driver: "json-file"
       options:
         max-size: "5m"
         max-file: "3"
-        tag: "{{.ImageName}}|{{.Name}}"     
+        tag: "{{.ImageName}}|{{.Name}}"    
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.crfmn-chassis.rule=Host(`chassis.crf.mn`)"
+      - "traefik.http.routers.crfmn-chassis.entrypoints=websecure"
+      - "traefik.http.routers.crfmn-chassis.tls.certresolver=letsencryptresolver"
+      - "traefik.http.routers.crfmn-chassis.service=crfmn-chassis-service"
+      - "traefik.http.services.crfmn-chassis-service.loadbalancer.server.port=${PORT:-3000}"
+
 
 networks:
   testtask:
+  traefik-public:
+    external: true
