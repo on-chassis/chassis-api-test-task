@@ -25,7 +25,6 @@ export class CreateSectionDto {
   description?: string;
 
   @IsOptional()
-  @IsUUID()
   @Validate(EntityExistsConstraint, ['Poll'], {
     message: 'Poll Not Found',
   })
@@ -41,6 +40,7 @@ export class CreateSectionDto {
       message: 'Entity owner invalid',
     },
   )
+  @IsUUID()
   pollId?: string;
 
   @IsOptional()

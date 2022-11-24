@@ -67,7 +67,10 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB_NAME}
       PORT: ${PORT:-3000}
-    command: wait-for-it postgres:5432 -s -t 60 -- yarn start:dev
+      WAIT_FOR: postgres:5432
+      WAIT_FOR_TIMEOUT: 60
+    # command: wait-for-it postgres:5432 -s -t 60 -- yarn start:dev
+    command: yarn start:dev
     ports:
       - 80:${PORT:-3000}
     depends_on:

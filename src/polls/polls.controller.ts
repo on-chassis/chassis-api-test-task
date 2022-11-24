@@ -58,9 +58,17 @@ export class PollsController {
     return this.pollsService.findPublicByUserId(userId, true);
   }
 
+  @AllowAny()
   @Get(':id')
-  findById(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.pollsService.findById(id);
+  findById(
+    @CurrentUser() user: AuthUser,
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ) {
+    if (user?.id) {
+      return this.pollsService.findById(id);
+    }
+
+    return this.pollsService.findPublicById(id);
   }
 
   @Patch(':id')

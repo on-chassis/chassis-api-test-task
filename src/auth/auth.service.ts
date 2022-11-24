@@ -41,7 +41,9 @@ export class AuthService {
     throw new UnauthorizedException();
   }
 
-  async signUp(signUpDto: SignUpDto): Promise<void> {
-    await this.usersService.create(signUpDto);
+  async signUp(signUpDto: SignUpDto): Promise<User> {
+    const user = await this.usersService.create(signUpDto);
+
+    return user;
   }
 }

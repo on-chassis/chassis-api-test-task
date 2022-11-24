@@ -23,6 +23,8 @@ RUN yarn
 
 COPY --chown=node:node . .
 
+CMD [ "./run.sh" ]
+
 # BUILD PROD
 FROM node:16-alpine AS build
 

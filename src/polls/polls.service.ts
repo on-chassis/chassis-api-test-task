@@ -48,6 +48,13 @@ export class PollsService {
     });
   }
 
+  findPublicById(id: string) {
+    return this.pollsRepository.findOneBy({
+      id,
+      nonPublic: false,
+    });
+  }
+
   findAllByUserId(userId: string, full = false) {
     return this.pollsRepository.find({
       where: {
