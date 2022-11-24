@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsOptional,
@@ -45,6 +45,7 @@ export class UpdateSectionDto extends PartialType(CreateSectionDto) {
   )
   pollId?: string;
 
+  @ApiProperty({ example: '0' })
   @IsOptional()
   @IsNumber()
   orderBy?: number;

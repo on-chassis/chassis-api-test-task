@@ -8,7 +8,7 @@ import {
   Delete,
   ParseUUIDPipe,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthUser } from 'src/app.context';
 import { AllowAny } from 'src/decorators/allow-all.decorator';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
@@ -22,16 +22,19 @@ import { PollsService } from './polls.service';
 export class PollsController {
   constructor(private readonly pollsService: PollsService) {}
 
+  @ApiOperation({ summary: 'Add new poll' })
   @Post()
   create(@CurrentUser() user: AuthUser, @Body() createPollDto: CreatePollDto) {
     return this.pollsService.create(createPollDto, user.id);
   }
 
+  @ApiOperation({ summary: 'Get all polls' })
   @Get()
   findAll() {
     return this.pollsService.findAll();
   }
 
+  @ApiOperation({ summary: 'Get polls by user ID' })
   @Get('user/:userId')
   @AllowAny()
   findAllByUser(
@@ -45,6 +48,7 @@ export class PollsController {
     return this.pollsService.findPublicByUserId(userId);
   }
 
+  @ApiOperation({ summary: 'Get polls by user ID with relations' })
   @Get('user/:userId/full')
   @AllowAny()
   findAllByUserWithRelations(
@@ -58,6 +62,7 @@ export class PollsController {
     return this.pollsService.findPublicByUserId(userId, true);
   }
 
+  @ApiOperation({ summary: 'Get poll by ID' })
   @AllowAny()
   @Get(':id')
   findById(
@@ -71,6 +76,7 @@ export class PollsController {
     return this.pollsService.findPublicById(id);
   }
 
+  @ApiOperation({ summary: 'Update poll by ID' })
   @Patch(':id')
   update(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -79,6 +85,7 @@ export class PollsController {
     return this.pollsService.update(id, updatePollDto);
   }
 
+  @ApiOperation({ summary: 'Delete poll by ID' })
   @Delete(':id')
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.pollsService.remove(id);

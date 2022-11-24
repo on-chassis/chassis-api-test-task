@@ -8,7 +8,7 @@ import {
   Delete,
   ParseUUIDPipe,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { CreateSectionDto } from './dto/create-section.dto';
 import { UpdateSectionDto } from './dto/update-section.dto';
@@ -19,21 +19,25 @@ import { SectionsService } from './sections.service';
 export class SectionsController {
   constructor(private readonly sectionsService: SectionsService) {}
 
+  @ApiOperation({ summary: 'Add new section' })
   @Post()
   create(@Body() createSectionDto: CreateSectionDto) {
     return this.sectionsService.create(createSectionDto);
   }
 
+  @ApiOperation({ summary: 'Get all sections' })
   @Get()
   findAll() {
     return this.sectionsService.findAll();
   }
 
+  @ApiOperation({ summary: 'Get section by ID' })
   @Get(':id')
   findById(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.sectionsService.findById(id);
   }
 
+  @ApiOperation({ summary: 'Update section by ID' })
   @Patch(':id')
   update(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -42,6 +46,7 @@ export class SectionsController {
     return this.sectionsService.update(id, updateSectionDto);
   }
 
+  @ApiOperation({ summary: 'Delete section by ID' })
   @Delete(':id')
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.sectionsService.remove(id);
