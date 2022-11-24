@@ -8,7 +8,13 @@ FROM node:latest AS development
 
 RUN apt-get update && apt-get install -y "wait-for-it"
 
+RUN yarn global add @nestjs/cli
+
 WORKDIR /usr/src/app
+
+RUN chown node:node .
+
+USER node
 
 COPY --chown=node:node package.json ./
 COPY --chown=node:node yarn.lock ./
@@ -16,8 +22,6 @@ COPY --chown=node:node yarn.lock ./
 RUN yarn
 
 COPY --chown=node:node . .
-
-USER node
 
 # BUILD PROD
 FROM node:16-alpine AS build
